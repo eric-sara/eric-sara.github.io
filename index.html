@@ -205,9 +205,13 @@
       <img src="assets/img/_DSC5678.jpg" alt="" loading="lazy" data-noreveal="1" data-bleed="1" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 14%;opacity:.26;transform:scale(1.02);">
     </div>
     <div style="position:absolute;inset:0;z-index:1;background:rgba(251,247,244,.44);"></div>
-    <div data-rv="1" style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:26px;padding:96px 0;">
+    <div data-rv="1" style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:26px;padding:72px 0 88px;">
       <div style="font-family:'Lato',sans-serif;font-weight:300;font-size:11px;letter-spacing:.32em;text-indent:.32em;color:rgba(74,64,60,.58);">the date</div>
-      <div data-track="1" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(48px,14vw,100px);letter-spacing:.1em;line-height:1;color:#C4A38F;">12 / 12</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+        <div data-track="1" style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(48px,14vw,100px);letter-spacing:.1em;line-height:1;color:#C4A38F;">12 / 12</div>
+        <!-- 年份只出現在這裡（原本 08 的「2026 / 12 / 12」拿掉了） -->
+        <div style="font-size:var(--t-small);letter-spacing:.3em;text-indent:.3em;color:rgba(74,64,60,.58);">2026・星期六</div>
+      </div>
       <!-- 星期標頭是固定的；下面 35 格日期由 app.js 的 buildCalendar() 產生 -->
       <div id="calGrid" style="display:grid;grid-template-columns:repeat(7,minmax(34px,44px));gap:2px;font-family:'Lato',sans-serif;font-weight:300;color:#4A403C;">
         <div style="height:32px;display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(74,64,60,.5);font-family:'Noto Sans TC',sans-serif;">日</div>
@@ -218,19 +222,8 @@
         <div style="height:32px;display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(74,64,60,.5);font-family:'Noto Sans TC',sans-serif;">五</div>
         <div style="height:32px;display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(74,64,60,.5);font-family:'Noto Sans TC',sans-serif;">六</div>
       </div>
-    </div>
-  </section>
-
-  <!-- ══ 08 婚禮流程 ══ -->
-  <section data-screen-label="08 婚禮流程" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:36px;padding:72px 0;">
-    <div data-rv="card" data-mplx="1" data-paper="1" style="width:min(86vw,620px);background:#FFFFFF;padding:12px 12px 44px;border-radius:3px;box-shadow:0 8px 28px rgba(74,64,60,.10);position:relative;">
-      <img src="assets/img/_DSC5696.jpg" alt="" loading="lazy" style="width:100%;display:block;">
-      <div style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-family:'Parisienne',cursive;font-size:15px;color:rgba(196,163,143,.7);">the schedule</div>
-    </div>
-    <div data-rv="1" style="width:min(86vw,620px);display:flex;flex-direction:column;gap:26px;">
-      <div style="font-family:'Lato',sans-serif;font-weight:300;font-size:11px;letter-spacing:.32em;text-indent:.32em;color:rgba(74,64,60,.58);">the banquet</div>
-      <div style="font-family:'Noto Serif TC',serif;font-weight:500;font-size:var(--t-lead);color:#4A403C;">我們想把幸福變成一件正式的事</div>
-      <div style="font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(20px,5vw,30px);letter-spacing:.28em;color:#C4A38F;">2026 / 12 / 12</div>
+      <!-- 時間和行事曆原本是獨立的「08 婚禮流程」，併進來後一頁就看得到哪天、幾點、加行事曆 -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:30px;margin-top:14px;">
       <div style="display:flex;align-items:stretch;gap:22px;">
         <!-- 兩欄的 gap 要一樣，左邊時間才會對齊右邊名稱；拉到 34px 是為了塞「備有迎賓雞尾酒」那行小字 -->
         <div style="display:flex;flex-direction:column;gap:34px;text-align:right;">
@@ -245,9 +238,10 @@
           <div style="font-size:var(--t-body);letter-spacing:.2em;color:rgba(74,64,60,.58);display:flex;align-items:center;height:clamp(24px,6vw,36px);">婚宴開席</div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px;align-items:flex-start;">
+      <div style="display:flex;flex-direction:column;gap:12px;align-items:center;">
         <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=%E7%8E%8B%E5%8D%9A%E7%8E%84%20%EF%BC%86%20%E6%A5%8A%E7%90%87%20%E5%A9%9A%E5%AE%B4&amp;dates=20261212T033000Z/20261212T070000Z&amp;details=11%3A30%20%E8%B3%93%E5%AE%A2%E5%85%A5%E5%B8%AD%EF%BC%88%E5%82%99%E6%9C%89%E8%BF%8E%E8%B3%93%E9%9B%9E%E5%B0%BE%E9%85%92%EF%BC%89%EF%BC%8F12%3A00%20%E5%A9%9A%E5%AE%B4%E9%96%8B%E5%B8%AD&amp;location=%E9%A0%A4%E5%93%81%E5%A4%A7%E9%A3%AF%E5%BA%97%20%E6%96%B0%E8%8E%8A%E6%99%B6%E5%86%A0%E9%A4%A8%206F%20%E9%87%91%E7%B0%A6%E5%BB%B3%EF%BC%88%E6%96%B0%E5%8C%97%E5%B8%82%E6%96%B0%E8%8E%8A%E5%8D%80%E4%BA%94%E5%B7%A5%E8%B7%AF66%E8%99%9F%EF%BC%89" target="_blank" rel="noopener" data-press="1" style="display:block;width:min(80vw,300px);height:48px;line-height:48px;text-align:center;background:#E9C6C2;color:#4A403C;text-decoration:none;border-radius:3px;letter-spacing:.15em;text-indent:.15em;font-family:'Noto Sans TC',sans-serif;font-weight:300;font-size:15px;">加入行事曆</a>
         <a id="icsLink" href="#" download="wedding.ics" style="font-size:13px;color:rgba(74,64,60,.58);text-decoration:underline;">用 Apple 行事曆</a>
+      </div>
       </div>
     </div>
   </section>
@@ -256,6 +250,11 @@
 
   <!-- ══ 09 倒數 ══（「生活片段」那段原本也在這，搬到 06b 了，故事才不會被日期打斷） -->
   <section data-screen-label="09 倒數" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:52px;padding:48px 0 96px;">
+    <!-- 這張原本在已拿掉的「08 婚禮流程」，兩人看著鏡頭笑，放在「還有⋯就見面了」上面剛好 -->
+    <div data-rv="card" data-mplx="1" data-paper="1" style="width:min(86vw,620px);background:#FFFFFF;padding:12px 12px 44px;border-radius:3px;box-shadow:0 8px 28px rgba(74,64,60,.10);position:relative;">
+      <img src="assets/img/_DSC5696.jpg" alt="" loading="lazy" style="width:100%;display:block;">
+      <div style="position:absolute;left:0;right:0;bottom:12px;text-align:center;font-family:'Parisienne',cursive;font-size:15px;color:rgba(196,163,143,.7);">see you soon</div>
+    </div>
     <div data-rv="1" style="width:min(86vw,620px);display:flex;flex-direction:column;gap:22px;">
       <div style="font-family:'Lato',sans-serif;font-weight:300;font-size:11px;letter-spacing:.32em;text-indent:.32em;color:rgba(74,64,60,.58);">counting down</div>
       <div id="cdPre" style="font-size:var(--t-body);letter-spacing:.2em;color:rgba(74,64,60,.58);">還有</div>
