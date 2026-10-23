@@ -1,0 +1,214 @@
+/* ─────────────────────────────────────────────────────────────
+   電子喜帖 ── 室內光 / 粉紗棚拍
+   全域樣式。各區塊的細節樣式維持寫在 index.html 的 inline style，
+   與原始設計稿一致，改版面時直接改該元素上的 style 即可。
+   ───────────────────────────────────────────────────────────── */
+
+/* ── 色票（要換色改這裡就好） ── */
+:root {
+  --c-bg:      #FBF7F4;  /* 頁面底色 */
+  --c-ink:     #4A403C;  /* 主要文字 */
+  --c-ink-60:  rgba(74, 64, 60, .58);
+  --c-gold:    #C4A38F;  /* 線條、英文小標 */
+  --c-gold-dk: #A9856E;
+  --c-pink:    #E9C6C2;  /* 按鈕、強調 */
+  --c-rose:    #D8A9A4;
+  --c-rose-dk: #B0817B;  /* 深一階。文字疊在照片上時用，淺色版會看不清楚 */
+  --c-card:    #FFFFFF;
+}
+
+/* ── 字級（全站等比縮放） ── */
+:root {
+  --t-display: clamp(40px, 12vw, 140px);
+  --t-title:   clamp(24px, 6.4vw, 72px);
+  --t-lead:    clamp(17px, 4.4vw, 26px);
+  --t-body:    clamp(15px, 3.8vw, 20px);
+  --t-small:   clamp(12px, 3vw, 15px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  overflow-x: clip;
+}
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  font-weight: 300;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+a        { color: var(--c-gold); }
+a:hover  { color: var(--c-gold-dk); }
+
+input::placeholder { color: rgba(74, 64, 60, .3); }
+
+/* 送出中的按鈕不要被當成可點 */
+button[disabled] { cursor: not-allowed; }
+
+/* ── 敘事段落逐行浮現 ──
+   .ln 是 app.js 的 setupLines() 依 <br> 切出來的。JS 沒跑就沒有 .ln，
+   原本的 <br> 保持原樣，文字照樣看得到。 */
+[data-lines] .ln {
+  display: block;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .9s ease-out, transform .9s ease-out;
+}
+
+/* ── 倒數翻牌 ──
+   每格兩個 .cd-face 輪流當正面：正面往上翻走，背面從上面翻進來。
+   這段字面樣式在 index.html 會重複八次，所以破例寫在這裡。
+   翻轉角度由 app.js 的 flipTo() 用 inline style 控制。 */
+[data-cd] { perspective: 260px; }
+
+[data-cd] .cd-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(28px, 7vw, 46px);
+  color: var(--c-ink);
+  backface-visibility: hidden;
+  transition: transform .3s cubic-bezier(.4, 0, .6, 1), opacity .3s;
+}
+
+/* 第二個面預設收在上方待命 */
+[data-cd] .cd-face + .cd-face { transform: rotateX(90deg); opacity: 0; }
+
+/* ── 側邊章節指示 ── 節點整塊由 app.js 的 setupChapters() 產生 */
+#chapters button:hover .ch-tip,
+#chapters button:focus-visible .ch-tip { opacity: 1; }
+/* 婚紗照相簿疊在上面時，刻度會壓在照片和燈箱的「下一張」上，先藏起來 */
+body.gallery-open #chapters { display: none; }
+
+/* 關掉動畫偏好時，花瓣整塊不畫（app.js 也會擋一層） */
+@media (prefers-reduced-motion: reduce) {
+  #petals { display: none; }
+}
+
+/* ── 動畫 ── */
+@keyframes introBreathe { 0%, 100% { opacity: .55 } 50% { opacity: 1 } }
+@keyframes cardFloat    { from { opacity: 0; transform: scale(.94) } to { opacity: 1; transform: scale(1) } }
+@keyframes softIn       { from { opacity: 0 } to { opacity: 1 } }
+@keyframes drawLine     { from { stroke-dashoffset: 400 } to { stroke-dashoffset: 0 } }
+@keyframes coverIn      { from { opacity: 0; transform: scale(1.05) } to { opacity: 1; transform: scale(1) } }
+@keyframes printDrop    { from { opacity: 0; transform: translateY(30px) rotate(-1.4deg) scale(.985) } to { opacity: 1; transform: translateY(0) rotate(0deg) scale(1) } }
+@keyframes textIn       { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes wmIn         { from { opacity: 0; transform: translateY(16px) rotate(-6deg) } to { opacity: .1; transform: translateY(0) rotate(-6deg) } }
+@keyframes hintFloat    { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(6px) } }
+@keyframes dayGlow      { 0%, 100% { box-shadow: 0 0 18px rgba(196, 163, 143, .15) } 50% { box-shadow: 0 0 18px rgba(196, 163, 143, .35) } }
+
+/* ── 底片顆粒 ──
+   噪點是 SVG feTurbulence 畫的，整層不動，所以不佔 GPU、也不跟花瓣或視差互相干擾。
+   壓在 9996：蓋得住內容，但在花瓣(9997)和按鈕(9998)之下。 */
+#grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9996;
+  pointer-events: none;
+  opacity: .04;
+  background-size: 160px 160px;
+  background-image: var(--noise);
+}
+
+/* 噪點貼圖只定義一次，底片顆粒和相紙紋理共用 */
+:root {
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+/* ══ 質感細節 ══ */
+
+/* ── 相紙：白框鋪一層極淡紋理，照片區加暗角和邊緣 ──
+   ::before 是紋理、::after 是暗角。照片本身 z-index:1 夾在中間，
+   紋理只露在白框上，暗角只蓋在照片上。暗角範圍由 --photo-inset 跟著各卡的 padding。 */
+[data-mplx], [data-paper] { position: relative; }
+[data-mplx] { --photo-inset: 12px 12px 44px; --photo-radius: 0; }
+
+[data-paper]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: .14;
+  mix-blend-mode: multiply;
+  background-image: var(--noise);
+  background-size: 120px 120px;
+}
+
+[data-mplx] > img {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 1px 2px rgba(74, 64, 60, .12);   /* 相片貼在框上的那道細邊 */
+}
+
+[data-mplx]::after {
+  content: '';
+  position: absolute;
+  inset: var(--photo-inset);
+  border-radius: var(--photo-radius);
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(74, 64, 60, 0) 58%, rgba(74, 64, 60, .11) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .28), inset 0 0 14px rgba(74, 64, 60, .14);
+}
+
+/* ── 按鈕的「可以點」暗示 ──
+   1. 常駐一層淺陰影，讓它從底色浮起來
+   2. 滑鼠移上去微微抬起、顏色深一階（用 filter，因為底色寫在 inline 蓋不掉）
+   3. 每 5 秒一道很淡的光滑過去 —— 手機沒有 hover，這是唯一能讓人知道它可點的動態提示
+   4. 按下去微微下沉
+   音樂鈕是圓形小圖示，只套 4。 */
+[data-press] { transition: transform .15s ease, box-shadow .25s ease, filter .25s ease; }
+[data-press]:not(#muteBtn) { position: relative; overflow: hidden; box-shadow: 0 4px 14px rgba(74, 64, 60, .10); }
+[data-press]:not(#muteBtn):hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(74, 64, 60, .16); filter: brightness(.97); }
+[data-press]:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(74, 64, 60, .10); }
+
+@keyframes btnSheen { 0% { transform: translateX(-160%) skewX(-18deg) } 18%, 100% { transform: translateX(260%) skewX(-18deg) } }
+[data-press]:not(#muteBtn)::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 45%;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .45) 50%, rgba(255, 255, 255, 0) 100%);
+  transform: translateX(-160%) skewX(-18deg);
+  animation: btnSheen 5.2s ease-in-out 1.5s infinite;
+}
+/* 還不能送的「送出」不要閃 */
+[data-press]:disabled::after { animation: none; }
+
+/* ── 輸入框聚焦：一條金線從中間往兩邊畫開 ──
+   畫在 background-image 上，所以 HTML 那邊的 inline 改成 background-color 才不會被 shorthand 蓋掉。
+   background-clip: padding-box 讓線落在邊框內側，不會被半透明的邊框壓住。 */
+#rsvpForm input[type="text"],
+#rsvpForm input[type="tel"],
+#rsvpForm textarea {
+  background-image: linear-gradient(var(--c-gold), var(--c-gold));
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 0% 1px;
+  background-clip: padding-box;
+}
+#rsvpForm input:focus,
+#rsvpForm textarea:focus { background-size: 100% 1px; }
+
+/* ── 音樂鈕：播放中有一圈很淡的呼吸光環 ── */
+@keyframes muteRing {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 163, 143, .4) }
+  60%      { box-shadow: 0 0 0 7px rgba(196, 163, 143, 0) }
+}
+#muteBtn.is-playing { animation: muteRing 2.8s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  #muteBtn.is-playing { animation: none; }
+  [data-press]:active { transform: none; }
+  [data-press]::after { animation: none; }
+}
